@@ -1,0 +1,96 @@
+<h1>
+  Category #<%= @the_category.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/categories">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_category/<%= @the_category.id %>">
+      Delete category
+    </a>
+  </div>
+  <dl>
+    <dt>
+      Name
+    </dt>
+    <dd>
+      <%= @the_category.name %>
+    </dd>
+
+    <dt>
+      Icon
+    </dt>
+    <dd>
+      <%= @the_category.icon %>
+    </dd>
+
+    <dt>
+      Color
+    </dt>
+    <dd>
+      <%= @the_category.color %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_category.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_category.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit category
+    </h2>
+  </header>
+
+  <form action="/modify_category/<%= @the_category.id %>"  method="post" >
+    <div>
+      <label for="name_box">
+        Name
+      </label>
+
+      <input type="text" id="name_box" name="query_name" value="<%= @the_category.name %>">
+    </div>
+
+    <div>
+      <label for="icon_box">
+        Icon
+      </label>
+
+      <input type="text" id="icon_box" name="query_icon" value="<%= @the_category.icon %>">
+    </div>
+
+    <div>
+      <label for="color_box">
+        Color
+      </label>
+
+      <input type="text" id="color_box" name="query_color" value="<%= @the_category.color %>">
+    </div>
+
+    <button type="submit">
+      Update category
+    </button>
+  </form>
+</article>
+
+<hr>
