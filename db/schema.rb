@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_20_180310) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_20_181122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,6 +177,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_20_180310) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "workouts", force: :cascade do |t|
+    t.string "title"
+    t.date "workout_date"
+    t.integer "duration_minutes"
+    t.float "distance_km"
+    t.integer "heart_rate_avg"
+    t.integer "heart_rate_max"
+    t.integer "calories"
+    t.string "source"
+    t.text "raw_data"
+    t.text "notes"
+    t.integer "user_id"
+    t.integer "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -1,0 +1,131 @@
+<h1>
+  List of all workouts
+</h1>
+
+<hr>
+
+<article>
+  <header>
+    <h2>
+      Add a new workout
+    </h2>
+  </header>
+
+  <form action="/insert_workout" method="post">
+    <div>
+      <label for="title_box">
+        Title
+      </label>
+
+      <input type="text" id="title_box" name="query_title">
+    </div>
+
+    <div>
+      <label for="workout_date_box">
+        Workout date
+      </label>
+
+      <input type="date" id="workout_date_box" name="query_workout_date">
+    </div>
+
+    <div>
+      <label for="duration_minutes_box">
+        Duration minutes
+      </label>
+
+      <input type="text" id="duration_minutes_box" name="query_duration_minutes">
+    </div>
+
+    <div>
+      <label for="distance_km_box">
+        Distance km
+      </label>
+
+      <input type="text" id="distance_km_box" name="query_distance_km">
+    </div>
+
+    <div>
+      <label for="heart_rate_avg_box">
+        Heart rate avg
+      </label>
+
+      <input type="text" id="heart_rate_avg_box" name="query_heart_rate_avg">
+    </div>
+
+    <div>
+      <label for="heart_rate_max_box">
+        Heart rate max
+      </label>
+
+      <input type="text" id="heart_rate_max_box" name="query_heart_rate_max">
+    </div>
+
+    <div>
+      <label for="calories_box">
+        Calories
+      </label>
+
+      <input type="text" id="calories_box" name="query_calories">
+    </div>
+
+    <div>
+      <label for="source_box">
+        Source
+      </label>
+
+      <input type="text" id="source_box" name="query_source">
+    </div>
+
+    <div>
+      <label for="raw_data_box">
+        Raw data
+      </label>
+
+      <input type="text" id="raw_data_box" name="query_raw_data">
+    </div>
+
+    <div>
+      <label for="notes_box">
+        Notes
+      </label>
+
+      <input type="text" id="notes_box" name="query_notes">
+    </div>
+
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id">
+    </div>
+
+    <div>
+      <label for="category_id_box">
+        Category
+      </label>
+
+      <input type="text" id="category_id_box" name="query_category_id">
+    </div>
+
+    <button type="submit">
+      Create workout
+    </button>
+  </form>
+</article>
+
+<hr>
+
+<article>
+  <ul>
+    <% @list_of_workouts.each do |a_workout| %>
+      <li>
+        <a href="/workouts/<%= a_workout.id %>">
+          Workout #<%= a_workout.id %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+</article>
+
+<hr>

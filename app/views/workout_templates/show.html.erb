@@ -1,0 +1,231 @@
+<h1>
+  Workout #<%= @the_workout.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/workouts">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_workout/<%= @the_workout.id %>">
+      Delete workout
+    </a>
+  </div>
+  <dl>
+    <dt>
+      Title
+    </dt>
+    <dd>
+      <%= @the_workout.title %>
+    </dd>
+
+    <dt>
+      Workout date
+    </dt>
+    <dd>
+      <%= @the_workout.workout_date %>
+    </dd>
+
+    <dt>
+      Duration minutes
+    </dt>
+    <dd>
+      <%= @the_workout.duration_minutes %>
+    </dd>
+
+    <dt>
+      Distance km
+    </dt>
+    <dd>
+      <%= @the_workout.distance_km %>
+    </dd>
+
+    <dt>
+      Heart rate avg
+    </dt>
+    <dd>
+      <%= @the_workout.heart_rate_avg %>
+    </dd>
+
+    <dt>
+      Heart rate max
+    </dt>
+    <dd>
+      <%= @the_workout.heart_rate_max %>
+    </dd>
+
+    <dt>
+      Calories
+    </dt>
+    <dd>
+      <%= @the_workout.calories %>
+    </dd>
+
+    <dt>
+      Source
+    </dt>
+    <dd>
+      <%= @the_workout.source %>
+    </dd>
+
+    <dt>
+      Raw data
+    </dt>
+    <dd>
+      <%= @the_workout.raw_data %>
+    </dd>
+
+    <dt>
+      Notes
+    </dt>
+    <dd>
+      <%= @the_workout.notes %>
+    </dd>
+
+    <dt>
+      User
+    </dt>
+    <dd>
+      <%= @the_workout.user_id %>
+    </dd>
+
+    <dt>
+      Category
+    </dt>
+    <dd>
+      <%= @the_workout.category_id %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_workout.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_workout.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit workout
+    </h2>
+  </header>
+
+  <form action="/modify_workout/<%= @the_workout.id %>"  method="post" >
+    <div>
+      <label for="title_box">
+        Title
+      </label>
+
+      <input type="text" id="title_box" name="query_title" value="<%= @the_workout.title %>">
+    </div>
+
+    <div>
+      <label for="workout_date_box">
+        Workout date
+      </label>
+
+      <input type="date" id="workout_date_box" name="query_workout_date" value="<%= @the_workout.workout_date %>">
+    </div>
+
+    <div>
+      <label for="duration_minutes_box">
+        Duration minutes
+      </label>
+
+      <input type="text" id="duration_minutes_box" name="query_duration_minutes" value="<%= @the_workout.duration_minutes %>">
+    </div>
+
+    <div>
+      <label for="distance_km_box">
+        Distance km
+      </label>
+
+      <input type="text" id="distance_km_box" name="query_distance_km" value="<%= @the_workout.distance_km %>">
+    </div>
+
+    <div>
+      <label for="heart_rate_avg_box">
+        Heart rate avg
+      </label>
+
+      <input type="text" id="heart_rate_avg_box" name="query_heart_rate_avg" value="<%= @the_workout.heart_rate_avg %>">
+    </div>
+
+    <div>
+      <label for="heart_rate_max_box">
+        Heart rate max
+      </label>
+
+      <input type="text" id="heart_rate_max_box" name="query_heart_rate_max" value="<%= @the_workout.heart_rate_max %>">
+    </div>
+
+    <div>
+      <label for="calories_box">
+        Calories
+      </label>
+
+      <input type="text" id="calories_box" name="query_calories" value="<%= @the_workout.calories %>">
+    </div>
+
+    <div>
+      <label for="source_box">
+        Source
+      </label>
+
+      <input type="text" id="source_box" name="query_source" value="<%= @the_workout.source %>">
+    </div>
+
+    <div>
+      <label for="raw_data_box">
+        Raw data
+      </label>
+
+      <input type="text" id="raw_data_box" name="query_raw_data" value="<%= @the_workout.raw_data %>">
+    </div>
+
+    <div>
+      <label for="notes_box">
+        Notes
+      </label>
+
+      <input type="text" id="notes_box" name="query_notes" value="<%= @the_workout.notes %>">
+    </div>
+
+    <div>
+      <label for="user_id_box">
+        User
+      </label>
+
+      <input type="text" id="user_id_box" name="query_user_id" value="<%= @the_workout.user_id %>">
+    </div>
+
+    <div>
+      <label for="category_id_box">
+        Category
+      </label>
+
+      <input type="text" id="category_id_box" name="query_category_id" value="<%= @the_workout.category_id %>">
+    </div>
+
+    <button type="submit">
+      Update workout
+    </button>
+  </form>
+</article>
+
+<hr>
