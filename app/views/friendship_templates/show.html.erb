@@ -1,0 +1,81 @@
+<h1>
+  Friendship #<%= @the_friendship.id %> details
+</h1>
+
+<article>
+  <div>
+    <a href="/friendships">
+      Go back
+    </a>
+  </div>
+
+  <div>
+    <a href="/delete_friendship/<%= @the_friendship.id %>">
+      Delete friendship
+    </a>
+  </div>
+  <dl>
+    <dt>
+      Follower
+    </dt>
+    <dd>
+      <%= @the_friendship.follower_id %>
+    </dd>
+
+    <dt>
+      Followed
+    </dt>
+    <dd>
+      <%= @the_friendship.followed_id %>
+    </dd>
+
+    <dt>
+      Created at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_friendship.created_at) %> ago
+    </dd>
+
+    <dt>
+      Updated at
+    </dt>
+    <dd>
+      <%= time_ago_in_words(@the_friendship.updated_at) %> ago
+    </dd>
+  </dl>
+</article>
+
+<hr>
+
+
+<article>
+  <header>
+    <h2>
+      Edit friendship
+    </h2>
+  </header>
+
+  <form action="/modify_friendship/<%= @the_friendship.id %>"  method="post" >
+    <div>
+      <label for="follower_id_box">
+        Follower
+      </label>
+
+      <input type="text" id="follower_id_box" name="query_follower_id" value="<%= @the_friendship.follower_id %>">
+    </div>
+
+    <div>
+      <label for="followed_id_box">
+        Followed
+      </label>
+
+      <input type="text" id="followed_id_box" name="query_followed_id" value="<%= @the_friendship.followed_id %>">
+    </div>
+
+    <button type="submit">
+      Update friendship
+    </button>
+  </form>
+</article>
+
+<hr>

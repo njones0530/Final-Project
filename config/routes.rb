@@ -1,4 +1,23 @@
 Rails.application.routes.draw do
+  # Routes for the Friendship resource:
+
+  # CREATE
+  post("/insert_friendship", { :controller => "friendships", :action => "create" })
+
+  # READ
+  get("/friendships", { :controller => "friendships", :action => "index" })
+
+  get("/friendships/:path_id", { :controller => "friendships", :action => "show" })
+
+  # UPDATE
+
+  post("/modify_friendship/:path_id", { :controller => "friendships", :action => "update" })
+
+  # DELETE
+  get("/delete_friendship/:path_id", { :controller => "friendships", :action => "destroy" })
+
+  #------------------------------
+
   # Routes for the Workout resource:
 
   # CREATE
