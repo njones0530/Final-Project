@@ -1,76 +1,109 @@
 class WorkoutsController < ApplicationController
   def index
-    matching_workouts = Workout.all
+    @workouts = current_user.workouts.recent.includes(:category)
 
-    @list_of_workouts = matching_workouts.order({ :created_at => :desc })
+    # Optional filtering
+    if params[:category_id].present?
+      @workouts = @workouts.where(category_id: params[:category_id])
+    end
 
-    render({ :template => "workout_templates/index" })
+    @categories = Category.all
+
+    render("workouts/index")
   end
 
   def show
-    the_id = params.fetch("path_id")
+    @workout = current_user.workouts.find(params[:id])
 
-    matching_workouts = Workout.where({ :id => the_id })
+    render("workouts/show")
+  end
 
-    @the_workout = matching_workouts.at(0)
-
-    render({ :template => "workout_templates/show" })
+  def new_form
+    render("workouts/new_form")
   end
 
   def create
-    the_workout = Workout.new
-    the_workout.title = params.fetch("query_title")
-    the_workout.workout_date = params.fetch("query_workout_date")
-    the_workout.duration_minutes = params.fetch("query_duration_minutes")
-    the_workout.distance_km = params.fetch("query_distance_km")
-    the_workout.heart_rate_avg = params.fetch("query_heart_rate_avg")
-    the_workout.heart_rate_max = params.fetch("query_heart_rate_max")
-    the_workout.calories = params.fetch("query_calories")
-    the_workout.source = params.fetch("query_source")
-    the_workout.raw_data = params.fetch("query_raw_data")
-    the_workout.notes = params.fetch("query_notes")
-    the_workout.user_id = params.fetch("query_user_id")
-    the_workout.category_id = params.fetch("query_category_id")
+    @workout = Workout.new
+    @workout.user_id = current_user.id
+    @workout.title = params.fetch("title")
+    @workout.workout_date = params.fetch("workout_date")
+    @workout.duration_minutes = params.fetch("duration_minutes")
+    @workout.distance_km = params.fetch("distance_km")
+    @workout.heart_rate_avg = params.fetch("heart_rate_avg")
+    @workout.heart_rate_max = params.fetch("heart_rate_max")
+    @workout.calories = params.fetch("calories")
+    @workout.source = "manual"
+    @workout.notes = params.fetch("notes")
 
-    if the_workout.valid?
-      the_workout.save
-      redirect_to("/workouts", { :notice => "Workout created successfully." })
+    # Use AI to categorize if no category was selected
+    if params[:category_id].present?
+      @workout.category_id = params.fetch("category_id")
     else
-      redirect_to("/workouts", { :alert => the_workout.errors.full_messages.to_sentence })
+      categorizer = WorkoutCategorizer.new(@workout)
+      @workout.category = categorizer.categorize
+    end
+
+    if @workout.save
+      redirect_to workout_path(@workout), notice: "Workout logged! Categorized as #{@workout.category_name}."
+    else
+      render("workouts/new_form")
     end
   end
 
+  def edit_form
+    @workout = current_user.workouts.find(params[:id])
+
+    render("workouts/edit_form")
+  end
+
   def update
-    the_id = params.fetch("path_id")
-    the_workout = Workout.where({ :id => the_id }).at(0)
+    @workout = current_user.workouts.find(params[:id])
+    @workout.title = params.fetch("title")
+    @workout.workout_date = params.fetch("workout_date")
+    @workout.duration_minutes = params.fetch("duration_minutes")
+    @workout.distance_km = params.fetch("distance_km")
+    @workout.heart_rate_avg = params.fetch("heart_rate_avg")
+    @workout.heart_rate_max = params.fetch("heart_rate_max")
+    @workout.calories = params.fetch("calories")
+    @workout.notes = params.fetch("notes")
+    @workout.category_id = params.fetch("category_id") if params[:category_id].present?
 
-    the_workout.title = params.fetch("query_title")
-    the_workout.workout_date = params.fetch("query_workout_date")
-    the_workout.duration_minutes = params.fetch("query_duration_minutes")
-    the_workout.distance_km = params.fetch("query_distance_km")
-    the_workout.heart_rate_avg = params.fetch("query_heart_rate_avg")
-    the_workout.heart_rate_max = params.fetch("query_heart_rate_max")
-    the_workout.calories = params.fetch("query_calories")
-    the_workout.source = params.fetch("query_source")
-    the_workout.raw_data = params.fetch("query_raw_data")
-    the_workout.notes = params.fetch("query_notes")
-    the_workout.user_id = params.fetch("query_user_id")
-    the_workout.category_id = params.fetch("query_category_id")
-
-    if the_workout.valid?
-      the_workout.save
-      redirect_to("/workouts/#{the_workout.id}", { :notice => "Workout updated successfully." } )
+    if @workout.save
+      redirect_to workout_path(@workout), notice: "Workout updated."
     else
-      redirect_to("/workouts/#{the_workout.id}", { :alert => the_workout.errors.full_messages.to_sentence })
+      render("workouts/edit_form")
     end
   end
 
   def destroy
-    the_id = params.fetch("path_id")
-    the_workout = Workout.where({ :id => the_id }).at(0)
+    @workout = current_user.workouts.find(params[:id])
+    @workout.destroy
 
-    the_workout.destroy
+    redirect_to workouts_path, notice: "Workout deleted."
+  end
 
-    redirect_to("/workouts", { :notice => "Workout deleted successfully." } )
+  # --- File Upload ---
+
+  def upload_form
+    render("workouts/upload_form")
+  end
+
+  def upload
+    file = params.fetch("workout_file")
+
+    if file.blank?
+      redirect_to upload_form_workouts_path, alert: "Please select a file."
+      return
+    end
+
+    parser = WorkoutParser.new(file, current_user)
+    results = parser.parse_and_create
+
+    if results[:errors].any?
+      redirect_to workouts_path, alert: "Imported #{results[:created]} workouts. #{results[:errors].length} rows had errors."
+    else
+      redirect_to workouts_path, notice: "Successfully imported #{results[:created]} workouts!"
+    end
   end
 end
+

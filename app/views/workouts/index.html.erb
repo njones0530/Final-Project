@@ -1,0 +1,56 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="bi bi-activity"></i> My Workouts</h2>
+  <div>
+    <a href="<%= new_workout_path %>" class="btn btn-primary me-2">
+      <i class="bi bi-plus-lg"></i> Log Workout
+    </a>
+    <a href="<%= upload_form_workouts_path %>" class="btn btn-outline-primary">
+      <i class="bi bi-upload"></i> Upload CSV
+    </a>
+  </div>
+</div>
+
+<!-- Category Filter -->
+<div class="mb-3">
+  <a href="<%= workouts_path %>" class="btn btn-sm <%= params[:category_id].blank? ? 'btn-dark' : 'btn-outline-dark' %> me-1">All</a>
+  <% @categories.each do |category| %>
+    <a href="<%= workouts_path(category_id: category.id) %>"
+       class="btn btn-sm <%= params[:category_id].to_s == category.id.to_s ? 'btn-dark' : 'btn-outline-dark' %> me-1">
+      <%= category_icon(category.name) %> <%= category.name %>
+    </a>
+  <% end %>
+</div>
+
+<% if @workouts.any? %>
+  <% @workouts.each do |workout| %>
+    <div class="workout-card">
+      <div class="workout-icon"><%= category_icon(workout.category_name) %></div>
+      <div class="workout-info">
+        <a href="<%= workout_path(workout) %>" class="text-decoration-none fw-semibold text-dark">
+          <%= workout.title %>
+        </a>
+        <div class="text-muted small"><%= workout.workout_date.strftime("%A, %b %d, %Y") %></div>
+      </div>
+      <div class="workout-stats d-none d-md-flex">
+        <% if workout.duration_minutes.present? %>
+          <span><i class="bi bi-clock"></i> <%= workout.formatted_duration %></span>
+        <% end %>
+        <% if workout.distance_km.present? && workout.distance_km > 0 %>
+          <span><i class="bi bi-geo-alt"></i> <%= workout.formatted_distance %></span>
+        <% end %>
+        <% if workout.calories.present? %>
+          <span><i class="bi bi-fire"></i> <%= workout.calories %> cal</span>
+        <% end %>
+      </div>
+      <div>
+        <span class="badge bg-<%= category_badge_color(workout.category_name) %>"><%= workout.category_name %></span>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="text-center text-muted py-5">
+    <h4>No workouts found</h4>
+    <p>Start by logging a workout or uploading a CSV file from your fitness app.</p>
+  </div>
+<% end %>
+

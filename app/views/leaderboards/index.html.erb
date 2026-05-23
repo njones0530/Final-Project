@@ -1,0 +1,107 @@
+<h2 class="mb-4"><i class="bi bi-trophy"></i> Leaderboards</h2>
+
+<% if current_user.following.empty? %>
+  <div class="text-center py-5">
+    <h4 class="text-muted">Follow some friends to see leaderboards!</h4>
+    <p class="text-muted">Leaderboards show rankings among you and the people you follow.</p>
+    <a href="<%= users_path %>" class="btn btn-primary">
+      <i class="bi bi-people"></i> Find Friends
+    </a>
+  </div>
+<% else %>
+
+  <!-- Time period filter -->
+  <div class="mb-4">
+    <a href="<%= leaderboards_path(period: 'all_time') %>"
+       class="btn btn-sm <%= @time_period == 'all_time' ? 'btn-dark' : 'btn-outline-dark' %> me-1">
+      All Time
+    </a>
+    <a href="<%= leaderboards_path(period: 'this_month') %>"
+       class="btn btn-sm <%= @time_period == 'this_month' ? 'btn-dark' : 'btn-outline-dark' %> me-1">
+      This Month
+    </a>
+    <a href="<%= leaderboards_path(period: 'this_week') %>"
+       class="btn btn-sm <%= @time_period == 'this_week' ? 'btn-dark' : 'btn-outline-dark' %> me-1">
+      This Week
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Total Workouts -->
+    <div class="col-md-6">
+      <div class="chart-container">
+        <h5 class="mb-3">🏅 Most Workouts</h5>
+        <% @by_total_workouts.each_with_index do |user, index| %>
+          <div class="leaderboard-row <%= 'current-user' if user.id == current_user.id %>">
+            <div class="leaderboard-rank"><%= rank_medal(index) %></div>
+            <div class="flex-grow-1">
+              <a href="<%= user_path(user) %>" class="text-decoration-none fw-semibold text-dark">
+                <%= user.display_name %>
+              </a>
+            </div>
+            <div class="fw-bold"><%= user.workout_count %> workouts</div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Total Duration -->
+    <div class="col-md-6">
+      <div class="chart-container">
+        <h5 class="mb-3">⏱️ Most Time Training</h5>
+        <% @by_total_duration.each_with_index do |user, index| %>
+          <div class="leaderboard-row <%= 'current-user' if user.id == current_user.id %>">
+            <div class="leaderboard-rank"><%= rank_medal(index) %></div>
+            <div class="flex-grow-1">
+              <a href="<%= user_path(user) %>" class="text-decoration-none fw-semibold text-dark">
+                <%= user.display_name %>
+              </a>
+            </div>
+            <div class="fw-bold">
+              <% total = user.total_duration.to_i %>
+              <%= total / 60 %>h <%= total % 60 %>m
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Total Distance -->
+    <div class="col-md-6">
+      <div class="chart-container">
+        <h5 class="mb-3">📍 Most Distance</h5>
+        <% @by_total_distance.each_with_index do |user, index| %>
+          <div class="leaderboard-row <%= 'current-user' if user.id == current_user.id %>">
+            <div class="leaderboard-rank"><%= rank_medal(index) %></div>
+            <div class="flex-grow-1">
+              <a href="<%= user_path(user) %>" class="text-decoration-none fw-semibold text-dark">
+                <%= user.display_name %>
+              </a>
+            </div>
+            <div class="fw-bold"><%= user.total_distance.to_f.round(1) %> km</div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Total Calories -->
+    <div class="col-md-6">
+      <div class="chart-container">
+        <h5 class="mb-3">🔥 Most Calories Burned</h5>
+        <% @by_total_calories.each_with_index do |user, index| %>
+          <div class="leaderboard-row <%= 'current-user' if user.id == current_user.id %>">
+            <div class="leaderboard-rank"><%= rank_medal(index) %></div>
+            <div class="flex-grow-1">
+              <a href="<%= user_path(user) %>" class="text-decoration-none fw-semibold text-dark">
+                <%= user.display_name %>
+              </a>
+            </div>
+            <div class="fw-bold"><%= number_with_delimiter(user.total_calories.to_i) %> cal</div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+<% end %>
+

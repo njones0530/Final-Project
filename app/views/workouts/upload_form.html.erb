@@ -1,0 +1,77 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <a href="<%= workouts_path %>" class="text-decoration-none mb-3 d-inline-block">Back to workouts</a>
+ 
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="mb-3"><i class="bi bi-upload"></i> Upload Workouts</h2>
+ 
+        <p class="text-muted">
+          Upload a CSV file exported from Strava, Apple Health, Garmin, or any fitness app.
+          Each row will be automatically categorized using AI based on the workout details.
+        </p>
+ 
+        <form action="<%= upload_workouts_path %>" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+ 
+          <div class="mb-4">
+            <label for="workout_file" class="form-label">Choose CSV File</label>
+            <input type="file" class="form-control form-control-lg" id="workout_file" name="workout_file" accept=".csv" required>
+          </div>
+ 
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-cloud-upload"></i> Upload and Categorize
+          </button>
+        </form>
+ 
+        <hr class="my-4">
+ 
+        <h5>Expected CSV Format</h5>
+        <p class="text-muted small">Your CSV should have headers. The app recognizes many common column names.</p>
+ 
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered small">
+            <thead class="table-light">
+              <tr>
+                <th>activity_name</th>
+                <th>date</th>
+                <th>duration_minutes</th>
+                <th>distance_km</th>
+                <th>avg_heart_rate</th>
+                <th>max_heart_rate</th>
+                <th>calories</th>
+                <th>notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Morning Run</td>
+                <td>2026-05-15</td>
+                <td>32</td>
+                <td>5.2</td>
+                <td>145</td>
+                <td>172</td>
+                <td>320</td>
+                <td>Easy pace</td>
+              </tr>
+              <tr>
+                <td>Bench Press</td>
+                <td>2026-05-14</td>
+                <td>45</td>
+                <td></td>
+                <td>110</td>
+                <td>135</td>
+                <td>280</td>
+                <td>Chest day</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+ 
+        <p class="text-muted small mt-2">
+          <a href="/sample_workout_upload.csv" download>Download a sample CSV</a> to see the format.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

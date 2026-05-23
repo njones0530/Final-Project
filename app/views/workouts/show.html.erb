@@ -1,0 +1,83 @@
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <a href="<%= workouts_path %>" class="text-decoration-none mb-3 d-inline-block">← Back to workouts</a>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <div>
+            <h2 class="mb-1"><%= category_icon(@workout.category_name) %> <%= @workout.title %></h2>
+            <p class="text-muted mb-0"><%= @workout.workout_date.strftime("%A, %B %d, %Y") %></p>
+          </div>
+          <span class="badge bg-<%= category_badge_color(@workout.category_name) %> fs-6"><%= @workout.category_name %></span>
+        </div>
+
+        <hr>
+
+        <div class="row g-3 mb-4">
+          <% if @workout.duration_minutes.present? %>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number" style="font-size:1.5rem;"><%= @workout.formatted_duration %></div>
+                <div class="stat-label">Duration</div>
+              </div>
+            </div>
+          <% end %>
+          <% if @workout.distance_km.present? && @workout.distance_km > 0 %>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number" style="font-size:1.5rem;"><%= @workout.formatted_distance %></div>
+                <div class="stat-label">Distance</div>
+              </div>
+            </div>
+          <% end %>
+          <% if @workout.heart_rate_avg.present? %>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number" style="font-size:1.5rem;"><%= @workout.heart_rate_avg %> <small>bpm</small></div>
+                <div class="stat-label">Avg Heart Rate</div>
+              </div>
+            </div>
+          <% end %>
+          <% if @workout.heart_rate_max.present? %>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number" style="font-size:1.5rem;"><%= @workout.heart_rate_max %> <small>bpm</small></div>
+                <div class="stat-label">Max Heart Rate</div>
+              </div>
+            </div>
+          <% end %>
+          <% if @workout.calories.present? %>
+            <div class="col-6 col-md-3">
+              <div class="stat-card">
+                <div class="stat-number" style="font-size:1.5rem;"><%= @workout.calories %></div>
+                <div class="stat-label">Calories</div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% if @workout.notes.present? %>
+          <h5>Notes</h5>
+          <p class="text-muted"><%= @workout.notes %></p>
+        <% end %>
+
+        <% if @workout.source.present? %>
+          <p class="text-muted small">Source: <%= @workout.source %></p>
+        <% end %>
+
+        <hr>
+
+        <div class="d-flex gap-2">
+          <a href="<%= edit_workout_path(@workout) %>" class="btn btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit
+          </a>
+          <%= link_to destroy_workout_path(@workout), data: { "turbo-method": :delete, turbo_confirm: "Are you sure?" }, class: "btn btn-outline-danger" do %>
+            <i class="bi bi-trash"></i> Delete
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

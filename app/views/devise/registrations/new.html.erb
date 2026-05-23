@@ -1,0 +1,53 @@
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="text-center mb-4">🏋️ Join FitTrack</h2>
+
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <% if resource.errors.any? %>
+            <div class="alert alert-danger">
+              <% resource.errors.full_messages.each do |message| %>
+                <div><%= message %></div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+            <%= f.text_field :username, class: "form-control", placeholder: "Pick a username", autofocus: true %>
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+            <%= f.email_field :email, class: "form-control", placeholder: "you@example.com" %>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+            <%= f.password_field :password, class: "form-control", placeholder: "At least 6 characters" %>
+          </div>
+
+          <div class="mb-3">
+            <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+            <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Confirm your password" %>
+          </div>
+
+          <div class="mb-4">
+            <label for="bio" class="form-label">Bio (optional)</label>
+            <%= f.text_area :bio, class: "form-control", rows: 2, placeholder: "Tell us about your fitness journey" %>
+          </div>
+
+          <%= f.submit "Create Account", class: "btn btn-primary btn-lg w-100" %>
+        <% end %>
+
+        <hr class="my-4">
+
+        <p class="text-center text-muted mb-0">
+          Already have an account? <a href="<%= new_session_path(resource_name) %>">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,112 @@
+<div class="row align-items-center mb-3">
+  <div class="col">
+    <h4 style="color: #e8e1d9; margin: 0;">Welcome back, <%= @user.display_name %></h4>
+  </div>
+  <div class="col-auto">
+    <a href="<%= new_workout_path %>" class="btn btn-sm" style="background: #c45e3a; color: white; border: none;">+ Log Workout</a>
+    <a href="<%= upload_form_workouts_path %>" class="btn btn-sm" style="background: #4a5a3a; color: white; border: none;">Upload</a>
+  </div>
+</div>
+
+<div class="row g-2 mb-3">
+  <div class="col">
+    <div style="background: linear-gradient(135deg, #c45e3a, #a04828); border-radius: 8px; padding: 0.75rem 1rem; color: white;">
+      <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;"><%= @total_workouts %></div>
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Workouts</div>
+    </div>
+  </div>
+  <div class="col">
+    <div style="background: linear-gradient(135deg, #4a5a3a, #3a4a2a); border-radius: 8px; padding: 0.75rem 1rem; color: white;">
+      <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;"><%= @workouts_this_week %></div>
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">This Week</div>
+    </div>
+  </div>
+  <div class="col">
+    <div style="background: linear-gradient(135deg, #8b6f47, #6b5535); border-radius: 8px; padding: 0.75rem 1rem; color: white;">
+      <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;"><%= @total_distance.round(1) %></div>
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Total KM</div>
+    </div>
+  </div>
+  <div class="col">
+    <div style="background: linear-gradient(135deg, #7a3b4e, #5c2a3a); border-radius: 8px; padding: 0.75rem 1rem; color: white;">
+      <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;"><%= number_with_delimiter(@total_calories) %></div>
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Calories</div>
+    </div>
+  </div>
+  <div class="col">
+    <div style="background: linear-gradient(135deg, #5a7a8a, #3a5a6a); border-radius: 8px; padding: 0.75rem 1rem; color: white;">
+      <div style="font-size: 1.5rem; font-weight: 800; line-height: 1;"><% total_mins = @total_duration.to_i %><%= total_mins / 60 %>h<%= total_mins % 60 %>m</div>
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8;">Total Time</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-2 mb-3">
+  <div class="col-md-4">
+    <div style="background: #2a2a2a; border-radius: 8px; padding: 0.75rem 1rem; height: 220px; overflow: hidden;">
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #c45e3a; margin-bottom: 0.5rem;">By Category</div>
+      <%= pie_chart @workouts_by_category, donut: true, height: "170px", colors: ["#c45e3a", "#4a5a3a", "#8b6f47", "#7a3b4e", "#d4a843", "#5a7a8a", "#888"] %>
+    </div>
+  </div>
+  <div class="col-md-5">
+    <div style="background: #2a2a2a; border-radius: 8px; padding: 0.75rem 1rem; height: 220px; overflow: hidden;">
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #8b6f47; margin-bottom: 0.5rem;">Minutes by Category</div>
+      <%= bar_chart @duration_by_category, height: "170px", colors: ["#8b6f47"], library: { plugins: { legend: { display: false } } } %>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div style="background: #2a2a2a; border-radius: 8px; padding: 0.75rem 1rem; height: 220px; overflow-y: auto;">
+      <div style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #4a5a3a; margin-bottom: 0.5rem;">Per Week</div>
+      <% if @workouts_by_week.any? %>
+        <% @workouts_by_week.each do |week, count| %>
+          <div class="d-flex justify-content-between" style="font-size: 0.85rem; margin-bottom: 0.25rem;">
+            <span style="color: #888;"><%= week %></span>
+            <strong style="color: #e8e1d9;"><%= count %></strong>
+          </div>
+        <% end %>
+      <% else %>
+        <span style="color: #555; font-size: 0.8rem;">No data yet</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div style="background: #2a2a2a; border-radius: 8px; padding: 0.75rem 1rem;">
+  <div class="row align-items-center mb-2">
+    <div class="col">
+      <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: #c45e3a;">Recent Workouts</span>
+    </div>
+    <div class="col-auto">
+      <a href="<%= workouts_path %>" style="color: #555; text-decoration: none; font-size: 0.75rem;">View all</a>
+    </div>
+  </div>
+
+  <% @recent_workouts.each do |workout| %>
+    <div class="row align-items-center py-1" style="border-bottom: 1px solid #333; font-size: 0.85rem;">
+      <div class="col-auto"><%= category_icon(workout.category_name) %></div>
+      <div class="col">
+        <a href="<%= workout_path(workout) %>" style="color: #e8e1d9; text-decoration: none; font-weight: 600;"><%= workout.title %></a>
+      </div>
+      <div class="col-auto" style="color: #555;"><%= workout.workout_date.strftime("%b %d") %></div>
+      <% if workout.duration_minutes.present? %>
+        <div class="col-auto" style="color: #888; font-size: 0.75rem;"><%= workout.formatted_duration %></div>
+      <% end %>
+      <% if workout.distance_km.present? && workout.distance_km > 0 %>
+        <div class="col-auto" style="color: #888; font-size: 0.75rem;"><%= workout.formatted_distance %></div>
+      <% end %>
+      <% if workout.calories.present? %>
+        <div class="col-auto" style="color: #888; font-size: 0.75rem;"><%= workout.calories %>cal</div>
+      <% end %>
+      <div class="col-auto">
+        <span style="background: #333; color: #b0a898; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem;"><%= workout.category_name %></span>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @recent_workouts.empty? %>
+    <div class="text-center py-3">
+      <span style="color: #555;">No workouts yet.</span>
+      <a href="<%= new_workout_path %>" class="btn btn-sm ms-2" style="background: #c45e3a; color: white; border: none;">Log one</a>
+    </div>
+  <% end %>
+</div>

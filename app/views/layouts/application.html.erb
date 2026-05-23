@@ -1,28 +1,295 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Rails 8 Template" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
+    <title>FitTrack</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= yield :head %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartkick@5.0.1/dist/chartkick.min.js"></script>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags rescue "" %>
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <style>
+      body {
+        background-color: #1e1e1e;
+        color: #e8e1d9;
+      }
+      a {
+        color: #c45e3a;
+      }
+      a:hover {
+        color: #e07050;
+      }
+      .stat-card {
+        background: #2a2a2a;
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+      }
+      .stat-card .stat-number {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #c45e3a;
+      }
+      .stat-card .stat-label {
+        color: #888;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .workout-card {
+        background: #2a2a2a;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .workout-card .workout-icon {
+        font-size: 1.3rem;
+      }
+      .workout-card .workout-info {
+        flex-grow: 1;
+      }
+      .workout-card .workout-info a {
+        color: #e8e1d9;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .workout-card .workout-stats {
+        display: flex;
+        gap: 1rem;
+        color: #b0a898;
+        font-size: 0.8rem;
+      }
+      .leaderboard-row {
+        background: #2a2a2a;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .leaderboard-row a {
+        color: #e8e1d9;
+        text-decoration: none;
+      }
+      .leaderboard-row.current-user {
+        border: 2px solid #c45e3a;
+        background: #352220;
+      }
+      .leaderboard-rank {
+        font-size: 1.25rem;
+        width: 2rem;
+        text-align: center;
+      }
+      .chart-container {
+        background: #2a2a2a;
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .navbar {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      }
+      .user-card {
+        background: #2a2a2a;
+        border-radius: 10px;
+        padding: 1.25rem;
+        text-align: center;
+      }
+      .user-card a {
+        color: #e8e1d9;
+      }
+      .card {
+        background: #2a2a2a;
+        border: none;
+        color: #e8e1d9;
+      }
+      .form-control, .form-select {
+        background-color: #333;
+        border-color: #444;
+        color: #e8e1d9;
+      }
+      .form-control:focus, .form-select:focus {
+        background-color: #3a3a3a;
+        border-color: #c45e3a;
+        color: #e8e1d9;
+        box-shadow: 0 0 0 0.2rem rgba(196,94,58,0.25);
+      }
+      .form-control::placeholder {
+        color: #777;
+      }
+      .form-label {
+        color: #b0a898;
+      }
+      .btn-primary {
+        background-color: #c45e3a;
+        border-color: #c45e3a;
+      }
+      .btn-primary:hover {
+        background-color: #a04828;
+        border-color: #a04828;
+      }
+      .btn-outline-primary {
+        color: #c45e3a;
+        border-color: #c45e3a;
+      }
+      .btn-outline-primary:hover {
+        background-color: #c45e3a;
+        color: white;
+      }
+      .btn-outline-danger {
+        color: #7a3b4e;
+        border-color: #7a3b4e;
+      }
+      .btn-outline-danger:hover {
+        background-color: #7a3b4e;
+        color: white;
+      }
+      .btn-dark {
+        background-color: #444;
+        border-color: #444;
+      }
+      .btn-outline-dark {
+        color: #b0a898;
+        border-color: #555;
+      }
+      .btn-outline-dark:hover {
+        background-color: #444;
+        color: #e8e1d9;
+      }
+      .btn-outline-secondary {
+        color: #888;
+        border-color: #555;
+      }
+      .text-muted {
+        color: #888 !important;
+      }
+      .text-dark {
+        color: #e8e1d9 !important;
+      }
+      .badge {
+        font-weight: 500;
+      }
+      .alert-success {
+        background-color: #2a3a2a;
+        border-color: #4a5a3a;
+        color: #7a9a5a;
+      }
+      .alert-warning {
+        background-color: #3a3020;
+        border-color: #5a4a30;
+        color: #d4a843;
+      }
+      hr {
+        border-color: #3a3a3a;
+      }
+      .table {
+        color: #b0a898;
+      }
+      .table-bordered {
+        border-color: #444;
+      }
+      .table-light {
+        background-color: #333;
+        color: #b0a898;
+      }
+      .dropdown-menu {
+        background-color: #2a2a2a;
+        border-color: #3a3a3a;
+      }
+      .dropdown-item {
+        color: #b0a898;
+      }
+      .dropdown-item:hover {
+        background-color: #333;
+        color: #e8e1d9;
+      }
+      .dropdown-divider {
+        border-color: #3a3a3a;
+      }
+    </style>
   </head>
 
   <body>
-    <%= yield %>
+    <% if user_signed_in? %>
+      <nav class="navbar navbar-expand-lg mb-4" style="background-color: #151515;">
+        <div class="container">
+          <a class="navbar-brand fw-bold" href="<%= dashboard_path %>" style="color: #c45e3a;">
+            FitTrack
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="<%= dashboard_path %>" style="color: #b0a898;">
+                  <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<%= workouts_path %>" style="color: #b0a898;">
+                  <i class="bi bi-activity"></i> Workouts
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<%= leaderboards_path %>" style="color: #b0a898;">
+                  <i class="bi bi-trophy"></i> Leaderboards
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="<%= users_path %>" style="color: #b0a898;">
+                  <i class="bi bi-people"></i> Find Friends
+                </a>
+              </li>
+            </ul>
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="color: #b0a898;">
+                  <i class="bi bi-person-circle"></i> <%= current_user.display_name %>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><a class="dropdown-item" href="<%= user_path(current_user) %>">My Profile</a></li>
+                  <li><a class="dropdown-item" href="<%= edit_user_registration_path %>">Settings</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><%= link_to "Sign Out", destroy_user_session_path, data: { "turbo-method": :delete }, class: "dropdown-item" %></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    <% end %>
+
+    <div class="container">
+      <% if notice.present? %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= notice %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+
+      <% if alert.present? %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <%= alert %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

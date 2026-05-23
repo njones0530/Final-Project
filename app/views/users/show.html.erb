@@ -1,0 +1,91 @@
+<a href="<%= users_path %>" class="text-decoration-none mb-3 d-inline-block">← Back to users</a>
+
+<div class="row g-4">
+  <!-- Profile Card -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm text-center p-4">
+      <div class="fs-1 mb-2">👤</div>
+      <h3><%= @user.display_name %></h3>
+      <% if @user.bio.present? %>
+        <p class="text-muted"><%= @user.bio %></p>
+      <% end %>
+
+      <div class="row g-2 my-3">
+        <div class="col-4">
+          <div class="fw-bold"><%= @user.total_workouts %></div>
+          <small class="text-muted">Workouts</small>
+        </div>
+        <div class="col-4">
+          <div class="fw-bold"><%= @user.followers.count %></div>
+          <small class="text-muted">Followers</small>
+        </div>
+        <div class="col-4">
+          <div class="fw-bold"><%= @user.following.count %></div>
+          <small class="text-muted">Following</small>
+        </div>
+      </div>
+
+      <% if @user != current_user %>
+        <% if @is_following %>
+          <% friendship = current_user.sent_friendships.find_by(followed_id: @user.id) %>
+          <%= link_to friendship_path(friendship), data: { "turbo-method": :delete }, class: "btn btn-outline-secondary w-100" do %>
+            <i class="bi bi-person-check"></i> Following
+          <% end %>
+        <% else %>
+          <form action="<%= friendships_path %>" method="post">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <input type="hidden" name="followed_id" value="<%= @user.id %>">
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-person-plus"></i> Follow
+            </button>
+          </form>
+        <% end %>
+      <% else %>
+        <a href="<%= edit_user_registration_path %>" class="btn btn-outline-primary w-100">
+          <i class="bi bi-gear"></i> Edit Profile
+        </a>
+      <% end %>
+    </div>
+
+    <!-- Category Breakdown -->
+    <% if @workouts_by_category.any? %>
+      <div class="chart-container mt-4">
+        <h5 class="mb-3">Workout Breakdown</h5>
+        <%= pie_chart @workouts_by_category, donut: true, colors: ["#0d6efd", "#198754", "#0dcaf0", "#dc3545", "#ffc107", "#212529", "#6c757d"] %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Recent Workouts -->
+  <div class="col-md-8">
+    <h4 class="mb-3">Recent Workouts</h4>
+
+    <% @workouts.each do |workout| %>
+      <div class="workout-card">
+        <div class="workout-icon"><%= category_icon(workout.category_name) %></div>
+        <div class="workout-info">
+          <div class="fw-semibold"><%= workout.title %></div>
+          <div class="text-muted small"><%= workout.workout_date.strftime("%b %d, %Y") %></div>
+        </div>
+        <div class="workout-stats d-none d-md-flex">
+          <% if workout.duration_minutes.present? %>
+            <span><i class="bi bi-clock"></i> <%= workout.formatted_duration %></span>
+          <% end %>
+          <% if workout.distance_km.present? && workout.distance_km > 0 %>
+            <span><i class="bi bi-geo-alt"></i> <%= workout.formatted_distance %></span>
+          <% end %>
+        </div>
+        <div>
+          <span class="badge bg-<%= category_badge_color(workout.category_name) %>"><%= workout.category_name %></span>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @workouts.empty? %>
+      <div class="text-center text-muted py-5">
+        <p>No workouts yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
