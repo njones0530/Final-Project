@@ -28,9 +28,13 @@
       <% if @user != current_user %>
         <% if @is_following %>
           <% friendship = current_user.sent_friendships.find_by(followed_id: @user.id) %>
-          <%= link_to friendship_path(friendship), data: { "turbo-method": :delete }, class: "btn btn-outline-secondary w-100" do %>
-            <i class="bi bi-person-check"></i> Following
-          <% end %>
+          <form action="<%= friendship_path(friendship) %>" method="post" style="display:inline;">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="btn btn-outline-secondary btn-sm">
+              <i class="bi bi-person-check"></i> Following
+            </button>
+          </form>
         <% else %>
           <form action="<%= friendships_path %>" method="post">
             <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
@@ -88,4 +92,3 @@
     <% end %>
   </div>
 </div>
-
